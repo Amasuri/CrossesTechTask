@@ -44,6 +44,13 @@ namespace CrossesTechTask.Code
         /// </summary>
         private bool TryPutCharOnField(int x, int y, char chr)
         {
+            //Проверка на корректность значений
+            if (x < 0 || x >= FieldSize)
+                return false;
+            if (y < 0 || y >= FieldSize)
+                return false;
+
+            //Проверка на то, что данная ячейка уже занята. Если нет, то ставится символ
             if (Field[x, y] == '*')
             {
                 Field[x, y] = chr;
