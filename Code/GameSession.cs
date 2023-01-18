@@ -67,9 +67,9 @@ namespace CrossesTechTask.Code
         /// Обновление логики хода игроков. Возвращает true если что-то поменялось в состоянии хода, и false, если нет
         /// (например, игрок - человек и думает над ходом, либо игрок - компьютер и сейчас задержка ввода (для удобного отображения) )
         /// </summary>
-        public bool UpdatePlayers()
+        public bool UpdatePlayers(Grid gameGrid)
         {
-            return GetCurrentPlayer().Update(this);
+            return GetCurrentPlayer().Update(this, gameGrid);
         }
 
         public Player GetCurrentPlayer()

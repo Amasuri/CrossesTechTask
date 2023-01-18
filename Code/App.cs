@@ -46,7 +46,7 @@ namespace CrossesTechTask.Code
             ChangedStateOnUpdate = false;
 
             ChangedStateOnUpdate =
-                session.UpdatePlayers() ||
+                session.UpdatePlayers(this.grid) ||
                 false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
         }
 

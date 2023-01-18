@@ -39,15 +39,15 @@ namespace CrossesTechTask.Code
         /// Обновление логики хода конкретного игрока. Возвращает true если что-то поменялось в состоянии хода, и false, если нет
         /// (например, игрок - человек и думает над ходом, либо игрок - компьютер и сейчас задержка ввода (для удобного отображения) )
         /// </summary>
-        public bool Update(GameSession session)
+        public bool Update(GameSession session, Grid gameGrid)
         {
             if (IsHuman)
-                return DoHumanLogic(session);
+                return DoHumanLogic(session, gameGrid);
             else
-                return DoAiLogic(session);
+                return DoAiLogic(session, gameGrid);
         }
 
-        private bool DoHumanLogic(GameSession session)
+        private bool DoHumanLogic(GameSession session, Grid gameGrid)
         {
             switch (Console.ReadKey(true).Key)
             {
@@ -66,12 +66,29 @@ namespace CrossesTechTask.Code
                 case ConsoleKey.DownArrow:
                     Pointer += new Vector2(0, 1);
                     return true;
+
+                case ConsoleKey.Spacebar:
+
+                    //Нажатие кнопки "пробел" отвечает за попытку поставить символ на игровое поле по координатам указателя
+                    //В случае успеха (на координатах нету другого символа) - ставит символ и передаёт ход другому игроку
+                    Vector2 coord = session.GetCurrentPlayer().Pointer;
+
+                    bool success = false;
+                    if (session.CurrentTurn == GameSession.TurnOf.Player1_X)
+                        success = gameGrid.TryPutCrossOnField((int)coord.X, (int)coord.Y);
+                    else if (session.CurrentTurn == GameSession.TurnOf.Player2_O)
+                        success = gameGrid.TryPutNoughtOnField((int)coord.X, (int)coord.Y);
+
+                    if (success)
+                        session.PassTurn();
+
+                    return true;
             }
 
             return false;
         }
 
-        private bool DoAiLogic(GameSession session)
+        private bool DoAiLogic(GameSession session, Grid gameGrid)
         {
             Thread.Sleep(500);
             session.PassTurn();
