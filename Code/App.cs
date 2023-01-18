@@ -38,14 +38,16 @@ namespace CrossesTechTask.Code
                 "\n  3. Компьютер против компьютера (демо)");
 
             session.SetMode(ModeChoice);
+            session.Init();
         }
 
         public void Update()
         {
             ChangedStateOnUpdate = false;
 
-            //on things...
-            ChangedStateOnUpdate = true;
+            ChangedStateOnUpdate =
+                session.UpdatePlayers() ||
+                false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
         }
 
         public void Draw()
