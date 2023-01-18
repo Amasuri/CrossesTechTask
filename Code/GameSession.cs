@@ -69,12 +69,20 @@ namespace CrossesTechTask.Code
         /// </summary>
         public bool UpdatePlayers()
         {
-            return false;
+            return GetCurrentPlayer().Update(this);
         }
 
         public Player GetCurrentPlayer()
         {
             return CurrentTurn == TurnOf.Player1 ? player1 : player2;
+        }
+
+        public void PassTurn()
+        {
+            if (CurrentTurn == TurnOf.Player1)
+                CurrentTurn = TurnOf.Player2;
+            else
+                CurrentTurn = TurnOf.Player1;
         }
     }
 }

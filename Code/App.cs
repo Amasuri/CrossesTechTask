@@ -47,7 +47,7 @@ namespace CrossesTechTask.Code
 
             ChangedStateOnUpdate =
                 session.UpdatePlayers() ||
-                true; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
+                false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
         }
 
         public void Draw()

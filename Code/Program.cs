@@ -15,8 +15,6 @@ namespace CrossesTechTask.Code
             {
                 app.Update();
                 app.Draw();
-
-                Thread.Sleep(1000);
             }
         }
     }
