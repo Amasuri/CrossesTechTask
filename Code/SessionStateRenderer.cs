@@ -30,7 +30,7 @@ namespace CrossesTechTask.Code
             }
 
             //Вывод информации о текущем ходе
-            string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1 ? "первый игрок" : "второй игрок";
+            string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
             string humanOrAI = session.GetCurrentPlayer().IsHuman ? " (человек)" : " (компьютер)";
 
             Console.WriteLine("Ходит " + turnOf + humanOrAI);

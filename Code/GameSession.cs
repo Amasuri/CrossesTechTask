@@ -17,8 +17,8 @@ namespace CrossesTechTask.Code
         public TurnOf CurrentTurn;
         public enum TurnOf
         {
-            Player1,
-            Player2
+            Player1_X,
+            Player2_O,
         }
 
         //Может быть как компьютером, так и игроком
@@ -39,9 +39,9 @@ namespace CrossesTechTask.Code
             Random rand = new Random();
             int chance = rand.Next(0, 100);
             if (chance < 50)
-                CurrentTurn = TurnOf.Player1;
+                CurrentTurn = TurnOf.Player1_X;
             else
-                CurrentTurn = TurnOf.Player2;
+                CurrentTurn = TurnOf.Player2_O;
 
             //Инициализируем игроков в зависимости от режима
             switch (CurrentMode)
@@ -74,15 +74,15 @@ namespace CrossesTechTask.Code
 
         public Player GetCurrentPlayer()
         {
-            return CurrentTurn == TurnOf.Player1 ? player1 : player2;
+            return CurrentTurn == TurnOf.Player1_X ? player1 : player2;
         }
 
         public void PassTurn()
         {
-            if (CurrentTurn == TurnOf.Player1)
-                CurrentTurn = TurnOf.Player2;
+            if (CurrentTurn == TurnOf.Player1_X)
+                CurrentTurn = TurnOf.Player2_O;
             else
-                CurrentTurn = TurnOf.Player1;
+                CurrentTurn = TurnOf.Player1_X;
         }
     }
 }
