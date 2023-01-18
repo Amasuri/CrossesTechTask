@@ -58,7 +58,7 @@ namespace CrossesTechTask.Code
             Console.Clear();
 
             SessionStateRenderer.RenderSimple(this.session);
-            GridRenderer.RenderSimple(this.grid);
+            GridRenderer.Render(this.grid, this.session);
         }
 
         private int ChooseFromThree(string descriptionText)

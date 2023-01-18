@@ -83,6 +83,9 @@ namespace CrossesTechTask.Code
                 CurrentTurn = TurnOf.Player2_O;
             else
                 CurrentTurn = TurnOf.Player1_X;
+
+            player1.ResetPointer();
+            player2.ResetPointer();
         }
     }
 }

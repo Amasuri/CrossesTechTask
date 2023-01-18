@@ -22,7 +22,7 @@ namespace CrossesTechTask.Code
 
         public Player()
         {
-            Pointer = new Vector2(0, 0);
+            ResetPointer();
         }
 
         public void SetAsHuman()
@@ -77,6 +77,11 @@ namespace CrossesTechTask.Code
             session.PassTurn();
 
             return true;
+        }
+
+        public void ResetPointer()
+        {
+            Pointer = new Vector2(0, 0);
         }
     }
 }
