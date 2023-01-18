@@ -47,7 +47,7 @@ namespace CrossesTechTask.Code
 
             ChangedStateOnUpdate =
                 session.UpdatePlayers() ||
-                false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
+                true; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
         }
 
         public void Draw()
@@ -57,7 +57,7 @@ namespace CrossesTechTask.Code
 
             Console.Clear();
 
-            Console.WriteLine("Ходит..." + "(кто-то)" + "\n");
+            SessionStateRenderer.RenderSimple(this.session);
             GridRenderer.RenderSimple(this.grid);
         }
 

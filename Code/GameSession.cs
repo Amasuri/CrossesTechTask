@@ -71,5 +71,10 @@ namespace CrossesTechTask.Code
         {
             return false;
         }
+
+        public Player GetCurrentPlayer()
+        {
+            return CurrentTurn == TurnOf.Player1 ? player1 : player2;
+        }
     }
 }
