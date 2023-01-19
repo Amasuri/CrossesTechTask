@@ -53,18 +53,34 @@ namespace CrossesTechTask.Code
             {
                 case ConsoleKey.LeftArrow:
                     Pointer += new Vector2(-1, 0);
+
+                    if (Pointer.X < 0)
+                        Pointer = new Vector2(0, Pointer.Y);
+
                     return true;
 
                 case ConsoleKey.UpArrow:
                     Pointer += new Vector2(0, -1);
+
+                    if (Pointer.Y < 0)
+                        Pointer = new Vector2(Pointer.X, 0);
+
                     return true;
 
                 case ConsoleKey.RightArrow:
                     Pointer += new Vector2(1, 0);
+
+                    if (Pointer.X > gameGrid.FieldMaxIndex)
+                        Pointer = new Vector2(gameGrid.FieldMaxIndex, Pointer.Y);
+
                     return true;
 
                 case ConsoleKey.DownArrow:
                     Pointer += new Vector2(0, 1);
+
+                    if (Pointer.Y > gameGrid.FieldMaxIndex)
+                        Pointer = new Vector2(Pointer.X, gameGrid.FieldMaxIndex);
+
                     return true;
 
                 case ConsoleKey.Spacebar:

@@ -10,6 +10,7 @@ namespace CrossesTechTask.Code
         private const char CircleChar = 'O';
 
         public int FieldSize { get; private set; }
+        public int FieldMaxIndex => FieldSize - 1;
         public char[,] Field { get; private set; }
 
         /// <summary>
