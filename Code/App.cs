@@ -39,13 +39,16 @@ namespace CrossesTechTask.Code
 
             session.SetMode(ModeChoice);
             session.Init();
+
+            RunFirstRefresh();
         }
 
-        public void Update()
+        public void Update(bool forceUpdate = false)
         {
             ChangedStateOnUpdate = false;
 
             ChangedStateOnUpdate =
+                forceUpdate ||
                 session.UpdatePlayers(this.grid) ||
                 false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
         }
@@ -59,6 +62,15 @@ namespace CrossesTechTask.Code
 
             SessionStateRenderer.RenderSimple(this.session);
             GridRenderer.Render(this.grid, this.session);
+        }
+
+        /// <summary>
+        /// Первое обновление после инициализации
+        /// </summary>
+        private void RunFirstRefresh()
+        {
+            this.Update(forceUpdate: true);
+            this.Draw();
         }
 
         private int ChooseFromThree(string descriptionText)
