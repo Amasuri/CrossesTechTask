@@ -59,10 +59,13 @@ namespace CrossesTechTask.Code
         public void Update(bool forceUpdate = false)
         {
             ChangedStateOnUpdate = false;
-            ChangedStateOnUpdate =
-                forceUpdate ||
-                session.UpdatePlayers(this.grid) ||
-                false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
+
+            if (this.gameState == GameState.Playing)
+            {
+                ChangedStateOnUpdate =
+                    forceUpdate ||
+                    session.UpdatePlayers(this.grid); //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
+            }
 
             CheckForWin();
         }
