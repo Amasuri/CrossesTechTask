@@ -29,11 +29,20 @@ namespace CrossesTechTask.Code
                     break;
             }
 
-            //Вывод информации о текущем ходе
-            string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
-            string humanOrAI = session.GetCurrentPlayer().IsHuman ? " (человек)" : " (компьютер)";
+            if (session.Winner == GameSession.TurnOf.None)
+            {
+                //Вывод информации о текущем ходе
+                string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
+                string humanOrAI = session.GetCurrentPlayer().IsHuman ? " (человек)" : " (компьютер)";
 
-            Console.WriteLine("Ходит " + turnOf + humanOrAI);
+                Console.WriteLine("Ходит " + turnOf + humanOrAI);
+            }
+            else
+            {
+                string winnerPlayerStr = session.Winner == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
+
+                Console.WriteLine("Побеждает " + winnerPlayerStr + "!");
+            }
         }
     }
 }

@@ -14,11 +14,13 @@ namespace CrossesTechTask.Code
             AIvsAI = 3,
         }
 
-        public TurnOf CurrentTurn;
+        public TurnOf CurrentTurn { get; private set; }
+        public TurnOf Winner { get; private set; }
         public enum TurnOf
         {
-            Player1_X,
-            Player2_O,
+            None = -1, //технически такого игрока нет, но некоторые переменные (например, переменная победитель) должны хранить нулевое значение
+            Player1_X = 0,
+            Player2_O = 1,
         }
 
         //Может быть как компьютером, так и игроком
@@ -32,6 +34,8 @@ namespace CrossesTechTask.Code
 
         public void Init()
         {
+            Winner = TurnOf.None;
+
             player1 = new Player();
             player2 = new Player();
 
@@ -86,6 +90,14 @@ namespace CrossesTechTask.Code
 
             player1.ResetPointer();
             player2.ResetPointer();
+        }
+
+        public void WriteWinner(TurnOf writeThisWinner)
+        {
+            if (this.Winner != TurnOf.None || writeThisWinner == TurnOf.None)
+                return;
+
+            this.Winner = writeThisWinner;
         }
     }
 }

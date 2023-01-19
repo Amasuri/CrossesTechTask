@@ -11,6 +11,18 @@ namespace CrossesTechTask.Code
         private GameSession session;
 
         /// <summary>
+        /// Описывает состояния игры с точки зрения экранов приложения, и соответствующей им логики и отрисовки.
+        /// Не описывает состояния текущей игровой сессии
+        /// </summary>
+        public enum GameState
+        {
+            Init,
+            Playing,
+            Gameover
+        }
+        public GameState gameState { get; private set; }
+
+        /// <summary>
         /// Внутренняя переменная для оптимизации отрисовки. Можно обновлять экран раз в Х миллисекунд, но тогда экран заметно мерцает
         /// (издержки консольного приложения). Эта переменная используется, чтобы обновлять экран только при смене состояния игры.
         /// </summary>
@@ -18,6 +30,7 @@ namespace CrossesTechTask.Code
 
         public App()
         {
+            gameState = GameState.Init;
             grid = new Grid();
             session = new GameSession();
         }
@@ -46,11 +59,12 @@ namespace CrossesTechTask.Code
         public void Update(bool forceUpdate = false)
         {
             ChangedStateOnUpdate = false;
-
             ChangedStateOnUpdate =
                 forceUpdate ||
                 session.UpdatePlayers(this.grid) ||
                 false; //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
+
+            CheckForWin();
         }
 
         public void Draw()
@@ -69,8 +83,31 @@ namespace CrossesTechTask.Code
         /// </summary>
         private void RunFirstRefresh()
         {
+            gameState = GameState.Playing;
+
             this.Update(forceUpdate: true);
             this.Draw();
+        }
+
+        /// <summary>
+        /// Проверять условия победы только если хоть что-то поменялось на экране. Порядок проверки не важен, потому что игроки всегда ходят по очереди.
+        /// То есть, если что-то поменялось от первого игрока, то второй игрок по правилам игры ничего не мог сделать в этот момент.
+        /// </summary>
+        private void CheckForWin()
+        {
+            if (ChangedStateOnUpdate)
+            {
+                bool P1wins = grid.CheckWin(GameSession.TurnOf.Player1_X);
+                bool P2wins = grid.CheckWin(GameSession.TurnOf.Player2_O);
+
+                if (P1wins || P2wins)
+                {
+                    gameState = GameState.Gameover;
+                    var winner = P1wins ? GameSession.TurnOf.Player1_X : GameSession.TurnOf.Player2_O;
+
+                    session.WriteWinner(winner);
+                }
+            }
         }
 
         private int ChooseFromThree(string descriptionText)
