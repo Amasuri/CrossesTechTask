@@ -1,4 +1,6 @@
-﻿namespace CrossesTechTask.Code
+﻿using System;
+
+namespace CrossesTechTask.Code
 {
     public class Grid
     {
@@ -78,8 +80,8 @@
             for (int x = 0; x < winAmount; x++)
                 hadWin = hadWin || CheckVerticalWinAtRow(checkThisChar, winAmount, x);
 
-            //Диагональных побед всегда возможно только две
-            ;
+            //Диагональных побед всегда возможно только две, и только в строго установленных местах
+            hadWin = hadWin || CheckDiagonalWins(checkThisChar, winAmount);
 
             return hadWin;
         }
@@ -108,6 +110,33 @@
             }
 
             return true;
+        }
+
+        private bool CheckDiagonalWins(char checkThisChar, int winAmount)
+        {
+            //Первая диагональ изменяется следующим образом: xy = 0,0; 1,1; 2,2 ...
+            for (int xy = 0; xy < winAmount; xy++)
+            {
+                if (this.Field[xy, xy] != checkThisChar)
+                    break;
+
+                //Если мы дошли до конца и до сих пор все символы были совпадающими, значит первая диагональ удовлетворяет условию победы
+                if (xy == winAmount - 1)
+                    return true;
+            }
+
+            //Вторая диагональ изменяется следующим образом: xy = 4,0; 3,1; 2,2; 1,3; 0,4
+            for (int xy = 0; xy < winAmount; xy++)
+            {
+                if (this.Field[winAmount-1 - xy, xy] != checkThisChar)
+                    break;
+
+                //Если мы дошли до конца и до сих пор все символы были совпадающими, значит первая диагональ удовлетворяет условию победы
+                if (xy == winAmount - 1)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
