@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CrossesTechTask.Code
+﻿namespace CrossesTechTask.Code
 {
     public class Grid
     {

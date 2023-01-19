@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace CrossesTechTask.Code
+﻿namespace CrossesTechTask.Code
 {
     internal class Program
     {
