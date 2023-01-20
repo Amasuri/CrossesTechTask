@@ -87,11 +87,7 @@ namespace CrossesTechTask.Code
                     //В случае успеха (на координатах нету другого символа) - ставит символ и передаёт ход другому игроку
                     Vector2 coord = session.GetCurrentPlayer().Pointer;
 
-                    bool success = false;
-                    if (session.CurrentTurn == GameSession.TurnOf.Player1_X)
-                        success = gameGrid.TryPutCrossOnField((int)coord.X, (int)coord.Y);
-                    else if (session.CurrentTurn == GameSession.TurnOf.Player2_O)
-                        success = gameGrid.TryPutNoughtOnField((int)coord.X, (int)coord.Y);
+                    bool success = TryPlaceOwnCharOnGrid(session, gameGrid, coord);
 
                     if (success)
                         session.PassTurn();
@@ -108,6 +104,18 @@ namespace CrossesTechTask.Code
             session.PassTurn();
 
             return true;
+        }
+
+        private bool TryPlaceOwnCharOnGrid(GameSession session, Grid gameGrid, Vector2 coord)
+        {
+            bool success = false;
+
+            if (session.CurrentTurn == GameSession.TurnOf.Player1_X)
+                success = gameGrid.TryPutCrossOnField((int)coord.X, (int)coord.Y);
+            else if (session.CurrentTurn == GameSession.TurnOf.Player2_O)
+                success = gameGrid.TryPutNoughtOnField((int)coord.X, (int)coord.Y);
+
+            return success;
         }
 
         public void ResetPointer()
