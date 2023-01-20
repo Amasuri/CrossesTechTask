@@ -66,7 +66,7 @@ namespace CrossesTechTask.Code
         }
 
         /// <summary>
-        /// Проверяет условия победы для заданного игрока: по вертикали, горизонтали и диагонали. В случае победы возвращает true, иначе false.
+        /// Проверяет, выполнено ли хоть одно условие победы для заданного игрока: по вертикали, горизонтали и диагонали. В случае победы возвращает true, иначе false.
         /// </summary>
         public bool CheckWin(GameSession.TurnOf player)
         {
@@ -87,6 +87,9 @@ namespace CrossesTechTask.Code
             return hadWin;
         }
 
+        /// <summary>
+        /// Проверка, выполнено ли условие победы в заданном ряду Y для игрока checkThisChar
+        /// </summary>
         private bool CheckHorizontalWinAtLine(char checkThisChar, int winAmount, int y)
         {
             for (int x = 0; x < winAmount; x++)
@@ -100,6 +103,9 @@ namespace CrossesTechTask.Code
             return true;
         }
 
+        /// <summary>
+        /// Проверка, выполнено ли условие победы в заданной колонне X для игрока checkThisChar
+        /// </summary>
         private bool CheckVerticalWinAtRow(char checkThisChar, int winAmount, int x)
         {
             for (int y = 0; y < winAmount; y++)
@@ -113,6 +119,9 @@ namespace CrossesTechTask.Code
             return true;
         }
 
+        /// <summary>
+        /// Проверка, выполнено ли условие победы хотя бы в одной из двух диагоналей
+        /// </summary>
         private bool CheckDiagonalWins(char checkThisChar, int winAmount)
         {
             //Первая диагональ изменяется следующим образом: xy = 0,0; 1,1; 2,2 ...
