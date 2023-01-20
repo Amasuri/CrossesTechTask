@@ -123,11 +123,21 @@ namespace CrossesTechTask.Code
             char self = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CrossChar : Grid.CircleChar;
             char opp = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CircleChar : Grid.CrossChar;
 
-            //Посчитать число побед для каждой клетки
+            //Проверка вариантов победы другого игрока: Если другой игрок победит следующим ходом, то сделать ход туда
+            ;
+
+            //Посчитать число возможных побед для каждой клетки. Победа считается, только если на линии свои, либо пустые клетки.
             int[,] winsPerCell = new int[gameGrid.FieldSize, gameGrid.FieldSize];
+            Vector3 XY_max = new Vector3(0, 0, 0);
             for (int x = 0; x < gameGrid.FieldSize; x++)
                 for (int y = 0; y < gameGrid.FieldSize; y++)
                 {
+                    //Проверка (диагонали, горизонталь, вертикаль)
+                    ;
+
+                    //Обновление данных о клетке с максимальным числом возможных побед
+                    if (winsPerCell[x, y] >= XY_max.Z)
+                        XY_max = new Vector3(x, y, winsPerCell[x, y]);
                 }
 
             session.PassTurn();
