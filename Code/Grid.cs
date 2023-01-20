@@ -4,8 +4,9 @@ namespace CrossesTechTask.Code
 {
     public class Grid
     {
-        private const char CrossChar = 'X';
-        private const char CircleChar = 'O';
+        public const char CrossChar = 'X';
+        public const char CircleChar = 'O';
+        public const char EmptyChar = '*';
 
         public int FieldSize { get; private set; }
         public int FieldMaxIndex => FieldSize - 1;
@@ -21,7 +22,7 @@ namespace CrossesTechTask.Code
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
                 {
-                    Field[x, y] = '*';
+                    Field[x, y] = EmptyChar;
                 }
         }
 
@@ -53,7 +54,7 @@ namespace CrossesTechTask.Code
                 return false;
 
             //Проверка на то, что данная ячейка уже занята. Если нет, то ставится символ
-            if (Field[x, y] == '*')
+            if (Field[x, y] == EmptyChar)
             {
                 Field[x, y] = chr;
                 return true;

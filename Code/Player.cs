@@ -100,7 +100,7 @@ namespace CrossesTechTask.Code
 
         private bool DoAiLogic(GameSession session, Grid gameGrid)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(300);
 
             /// Ходы в порядке приоритета:
             /// 1. Центральный, если 3х3 или 5х5 (4 варианта выигрыша: горизонталь, вертикаль и 2 диагонали)
@@ -118,6 +118,17 @@ namespace CrossesTechTask.Code
             ///     в. Проверить собственное число возможных "близких побед". Ранжировать по числу оставшихся для побед клеток
             ///     г. Если остался 1 ход до победы, поставить клетку туда
             ///     в. Если нет, то сделать ход из баланса близости к победе и числу возможных побед в этой клетке. Приоритет: близость к победе
+            ///
+
+            char self = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CrossChar : Grid.CircleChar;
+            char opp = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CircleChar : Grid.CrossChar;
+
+            //Посчитать число побед для каждой клетки
+            int[,] winsPerCell = new int[gameGrid.FieldSize, gameGrid.FieldSize];
+            for (int x = 0; x < gameGrid.FieldSize; x++)
+                for (int y = 0; y < gameGrid.FieldSize; y++)
+                {
+                }
 
             session.PassTurn();
 
