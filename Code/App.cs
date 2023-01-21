@@ -35,7 +35,7 @@ namespace CrossesTechTask.Code
 
         public void Init()
         {
-            int FieldSizeChoice = ChooseFromThree("Выберите размер поля:" +
+            int FieldSizeChoice = ChooseFromThree("Выберите размер поля (Введите 1-3 и нажмите Enter):" +
                                         "\n  1. 3х3" +
                                         "\n  2. 4х4" +
                                         "\n  3. 5х5");
@@ -43,7 +43,7 @@ namespace CrossesTechTask.Code
             int FieldSize = FieldSizeChoice + 2; //Удобным образом размер сетки соответствует пункту меню +2, но это можно поменять (при желании)
             grid.SetField(FieldSize);
 
-            int ModeChoice = ChooseFromThree("Выберите режим:" +
+            int ModeChoice = ChooseFromThree("Выберите режим (Введите 1-3 и нажмите Enter):" +
                 "\n  1. Игрок против компьютера" +
                 "\n  2. Игрок против игрока" +
                 "\n  3. Компьютер против компьютера (демо)");

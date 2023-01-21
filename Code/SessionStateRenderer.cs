@@ -30,16 +30,22 @@ namespace CrossesTechTask.Code
             if (session.Winner == GameSession.TurnOf.None)
             {
                 //Вывод информации о текущем ходе
-                string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
-                string humanOrAI = session.GetCurrentPlayer().IsHuman ? " (человек)" : " (компьютер)";
+                string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок ( X, " : "второй игрок ( O, ";
+                string humanOrAI = session.GetCurrentPlayer().IsHuman ? "человек)" : "компьютер)";
 
                 Console.WriteLine("Ходит " + turnOf + humanOrAI);
+
+                //Подсказка по управлению
+                if (session.GetCurrentPlayer().IsHuman)
+                    Console.WriteLine("(Выберите клетку стрелками, и затем нажмите Space)\n");
+                else
+                    Console.WriteLine("\n");
             }
             else
             {
                 string winnerPlayerStr = session.Winner == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
 
-                Console.WriteLine("Побеждает " + winnerPlayerStr + "!");
+                Console.WriteLine("Побеждает " + winnerPlayerStr + "!\n\n");
             }
         }
     }
