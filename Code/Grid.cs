@@ -281,9 +281,36 @@ namespace CrossesTechTask.Code
             }
             if (canWinDia)
             {
-                ;
+                //Проверка на принадлежность к какой-либо диагонали. Для сверху левой правило x==y, для сверху правой y == MaxIndex - x
+                bool IsUpperLeft = y == x;
+                bool IsUpperRight = y == this.FieldMaxIndex - x;
+
+                //Просчитывает минимальное число ходов для каждой из диагонали, при условии что клетка в диагонали
+                //и победа в этой диагонали ещё возможна
+                if (IsUpperLeft && CountPossibleDiagonalWins_Left(opponent) > 0)
+                {
+                    diagonalLeft = 0;
+
+                    for (int lxy = 0; lxy < this.FieldSize; lxy++)
+                    {
+                        if (this.Field[lxy, lxy] == Grid.EmptyChar)
+                            diagonalLeft++;
+                    }
+                }
+
+                if (IsUpperRight && CountPossibleDiagonalWins_Right(opponent) > 0)
+                {
+                    diagonalRight = 0;
+
+                    for (int lxy = 0; lxy < this.FieldSize; lxy++)
+                    {
+                        if (this.Field[this.FieldMaxIndex - lxy, lxy] == Grid.EmptyChar)
+                            diagonalRight++;
+                    }
+                }
             }
 
+            //При наличии нескольких побед, вернуть наиболее оптимальную
             return new int[] { horizontal, vertical, diagonalLeft, diagonalRight }.Min();
         }
     }

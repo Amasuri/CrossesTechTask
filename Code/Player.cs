@@ -130,6 +130,10 @@ namespace CrossesTechTask.Code
                 {
                     int turnsToWin = Int32.MaxValue;
                     turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(opponent, x, y);
+
+                    if(turnsToWin <= 1)
+                    {
+                    }
                 }
 
             //Проверка вариантов победы себя: Если этот игрок победит следующим ходом, то сделать ход туда.
