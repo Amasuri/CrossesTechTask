@@ -155,11 +155,11 @@ namespace CrossesTechTask.Code
         /// через какое-то число ходов. Возвращает 0, если такая победа невозможна (например, из-за клетки противника в этой горизонтали),
         /// и 1, если возможна (максимальное число горизонтальных побед на клетку при данных правилах).
         /// </summary>
-        public int CountPossibleHorizontalWinsAtCell(Grid gameGrid, char self, char opponent, int y)
+        public int CountPossibleHorizontalWinsAtCell(char self, int y)
         {
-            for (int x = 0; x < gameGrid.FieldSize; x++)
+            for (int x = 0; x < this.FieldSize; x++)
             {
-                if (gameGrid.Field[x, y] == self || gameGrid.Field[x, y] == Grid.EmptyChar)
+                if (this.Field[x, y] == self || this.Field[x, y] == Grid.EmptyChar)
                     continue;
                 else
                     return 0;
@@ -173,11 +173,11 @@ namespace CrossesTechTask.Code
         /// через какое-то число ходов. Возвращает 0, если такая победа невозможна (например, из-за клетки противника в этой вертикали),
         /// и 1, если возможна (максимальное число вертикальных побед на клетку при данных правилах).
         /// </summary>
-        public int CountPossibleVerticalWinsAtCell(Grid gameGrid, char self, char opponent, int x)
+        public int CountPossibleVerticalWinsAtCell(char self, int x)
         {
-            for (int y = 0; y < gameGrid.FieldSize; y++)
+            for (int y = 0; y < this.FieldSize; y++)
             {
-                if (gameGrid.Field[x, y] == self || gameGrid.Field[x, y] == Grid.EmptyChar)
+                if (this.Field[x, y] == self || this.Field[x, y] == Grid.EmptyChar)
                     continue;
                 else
                     return 0;
@@ -191,11 +191,11 @@ namespace CrossesTechTask.Code
         /// через какое-то число ходов. Возвращает 0, если такая победа невозможна (например, из-за клетки противника в этой вертикали).
         /// Возвращает 1, либо 2, если победа возможна хотя бы в одной из диагоналей (в зависимости от того, в скольки диагоналях возможна победа)
         /// </summary>
-        public int CountPossibleDiagonalWinsAtCell(Grid gameGrid, char self, char opponent, int x, int y)
+        public int CountPossibleDiagonalWinsAtCell(char opponent, int x, int y)
         {
             //Проверка на принадлежность к какой-либо диагонали. Для сверху левой правило x==y, для сверху правой y == MaxIndex - x
             bool IsUpperLeft = y == x;
-            bool IsUpperRight = y == gameGrid.FieldMaxIndex - x;
+            bool IsUpperRight = y == this.FieldMaxIndex - x;
 
             //Если клетка не принадлежит ни к какой из диагоналей, то проверять дальше не имеет смысла
             if (!IsUpperLeft && !IsUpperRight)
@@ -206,26 +206,26 @@ namespace CrossesTechTask.Code
             if (IsUpperLeft)
             {
                 //Сверху левая диагональ изменяется следующим образом: xy = 0,0; 1,1; 2,2 ...
-                for (int xy = 0; xy < gameGrid.FieldSize; xy++)
+                for (int xy = 0; xy < this.FieldSize; xy++)
                 {
-                    if (gameGrid.Field[xy, xy] == opponent)
+                    if (this.Field[xy, xy] == opponent)
                         break;
 
                     //Если мы дошли до конца и до сих пор все символы были либо своими, либо пустыми, значит сверху левая диагональ удовлетворяет условию победы
-                    if (xy == gameGrid.FieldMaxIndex)
+                    if (xy == this.FieldMaxIndex)
                         diagWinCount++;
                 }
             }
             if (IsUpperRight)
             {
                 //Сверху правая диагональ изменяется следующим образом: xy = 4,0; 3,1; 2,2; 1,3; 0,4
-                for (int xy = 0; xy < gameGrid.FieldSize; xy++)
+                for (int xy = 0; xy < this.FieldSize; xy++)
                 {
-                    if (gameGrid.Field[gameGrid.FieldMaxIndex - xy, xy] == opponent)
+                    if (this.Field[this.FieldMaxIndex - xy, xy] == opponent)
                         break;
 
                     //Если мы дошли до конца и до сих пор все символы были либо своими, либо пустыми, значит сверху правая диагональ удовлетворяет условию победы
-                    if (xy == gameGrid.FieldMaxIndex)
+                    if (xy == this.FieldMaxIndex)
                         diagWinCount++;
                 }
             }

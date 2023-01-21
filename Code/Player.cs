@@ -154,9 +154,9 @@ namespace CrossesTechTask.Code
                     //Проверка (диагонали, горизонталь, вертикаль)
                     int cellWinCount = 0;
 
-                    cellWinCount += gameGrid.CountPossibleHorizontalWinsAtCell(gameGrid, self, opponent, y);
-                    cellWinCount += gameGrid.CountPossibleVerticalWinsAtCell(gameGrid, self, opponent, x);
-                    cellWinCount += gameGrid.CountPossibleDiagonalWinsAtCell(gameGrid, self, opponent, x, y);
+                    cellWinCount += gameGrid.CountPossibleHorizontalWinsAtCell(self, y);
+                    cellWinCount += gameGrid.CountPossibleVerticalWinsAtCell(self, x);
+                    cellWinCount += gameGrid.CountPossibleDiagonalWinsAtCell(opponent, x, y);
 
                     winsPerCell[x, y] = cellWinCount;
 
