@@ -152,10 +152,21 @@ namespace CrossesTechTask.Code
             for (int x = 0; x < gameGrid.FieldSize; x++)
                 for (int y = 0; y < gameGrid.FieldSize; y++)
                 {
-                    //Проверка на самый оптимальный вариант победы
+                    //Проверка на самый быстрый вариант победы
                     int loc_turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(self, x, y);
-                    if(loc_turnsToWin < XY_turnsToWin.Z && gameGrid.Field[x,y] == Grid.EmptyChar)
+                    if (loc_turnsToWin < XY_turnsToWin.Z && gameGrid.Field[x, y] == Grid.EmptyChar)
+                    {
                         XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
+                    }
+
+                    //Если попался равный по скорости вариант победы, то проверить его на число возможных вариантов победы. Выбрать тот, где возможностей больше
+                    else if (loc_turnsToWin == XY_turnsToWin.Z && gameGrid.Field[x, y] == Grid.EmptyChar)
+                    {
+                        int winsFormer = gameGrid.CountPossibleWinsAtCell(self, opponent, (int)XY_turnsToWin.X, (int)XY_turnsToWin.Y);
+                        int winsCandidate = gameGrid.CountPossibleWinsAtCell(self, opponent, x, y);
+                        if(winsCandidate > winsFormer)
+                            XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
+                    }
                 }
 
             //Если самый быстрый вариант победы сейчас также при этом меньше максимально возможного числа ходов, то сделать ход туда
@@ -185,9 +196,7 @@ namespace CrossesTechTask.Code
                     //Проверка (диагонали, горизонталь, вертикаль)
                     int cellWinCount = 0;
 
-                    cellWinCount += gameGrid.CountPossibleHorizontalWinsAtCell(self, y);
-                    cellWinCount += gameGrid.CountPossibleVerticalWinsAtCell(self, x);
-                    cellWinCount += gameGrid.CountPossibleDiagonalWinsAtCell(opponent, x, y);
+                    cellWinCount += gameGrid.CountPossibleWinsAtCell(self, opponent, x, y);
 
                     winsPerCell[x, y] = cellWinCount;
 
