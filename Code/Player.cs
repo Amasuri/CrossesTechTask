@@ -133,11 +133,6 @@ namespace CrossesTechTask.Code
 
                     if(turnsToWin <= 1)
                     {
-                        //There should be some kind of way to check which one of 5-15 cells we should occupy
-                        //That is,
-                        //1. Which direction is opponent's win will be (H/V/D1/D2)
-                        //2. Of that, which cell is vacant
-
                         //Если клетка занята противником, следующий цикл просто найдёт другую клетку с такими же условиями,
                         //поэтому дополнительно проверять куда именно поставить "противопобедный" ход не надо
                         bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(x, y));
@@ -153,10 +148,27 @@ namespace CrossesTechTask.Code
             //Проверка своих вариантов победы: если есть вариант победы в FieldSize-1, то имеет смысл сделать ход туда
             //На практике это означает, что в 90% случаев все, кроме первого хода, будет приближением уже обозначенной победы
             //Если таких вариантов несколько, то выбрать тот, у которого наибольшее число возможных побед
+            Vector3 XY_turnsToWin = new Vector3(0, 0, Int32.MaxValue);
             for (int x = 0; x < gameGrid.FieldSize; x++)
                 for (int y = 0; y < gameGrid.FieldSize; y++)
                 {
+                    //Проверка на самый оптимальный вариант победы
+                    int loc_turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(self, x, y);
+                    if(loc_turnsToWin < XY_turnsToWin.Z && gameGrid.Field[x,y] == Grid.EmptyChar)
+                        XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
                 }
+
+            //Если самый быстрый вариант победы сейчас также при этом меньше максимально возможного числа ходов, то сделать ход туда
+            if (XY_turnsToWin.Z < gameGrid.FieldSize)
+            {
+                bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(XY_turnsToWin.X, XY_turnsToWin.Y));
+
+                if (lSuccess)
+                {
+                    session.PassTurn();
+                    return true;
+                }
+            }
 
             //Посчитать число возможных побед для каждой клетки. Победа считается, только если на линии свои, либо пустые клетки.
             int[,] winsPerCell = new int[gameGrid.FieldSize, gameGrid.FieldSize];
