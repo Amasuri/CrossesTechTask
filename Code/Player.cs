@@ -133,6 +133,20 @@ namespace CrossesTechTask.Code
 
                     if(turnsToWin <= 1)
                     {
+                        //There should be some kind of way to check which one of 5-15 cells we should occupy
+                        //That is,
+                        //1. Which direction is opponent's win will be (H/V/D1/D2)
+                        //2. Of that, which cell is vacant
+
+                        //Если клетка занята противником, следующий цикл просто найдёт другую клетку с такими же условиями,
+                        //поэтому дополнительно проверять куда именно поставить "противопобедный" ход не надо
+                        bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(x, y));
+
+                        if (lSuccess)
+                        {
+                            session.PassTurn();
+                            return true;
+                        }
                     }
                 }
 
