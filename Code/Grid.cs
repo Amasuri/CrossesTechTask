@@ -204,44 +204,87 @@ namespace CrossesTechTask.Code
             int diagWinCount = 0;
 
             if (IsUpperLeft)
-            {
-                //Сверху левая диагональ изменяется следующим образом: xy = 0,0; 1,1; 2,2 ...
-                for (int xy = 0; xy < this.FieldSize; xy++)
-                {
-                    if (this.Field[xy, xy] == opponent)
-                        break;
+                diagWinCount += CountPossibleDiagonalWins_Left(opponent);
 
-                    //Если мы дошли до конца и до сих пор все символы были либо своими, либо пустыми, значит сверху левая диагональ удовлетворяет условию победы
-                    if (xy == this.FieldMaxIndex)
-                        diagWinCount++;
-                }
-            }
             if (IsUpperRight)
-            {
-                //Сверху правая диагональ изменяется следующим образом: xy = 4,0; 3,1; 2,2; 1,3; 0,4
-                for (int xy = 0; xy < this.FieldSize; xy++)
-                {
-                    if (this.Field[this.FieldMaxIndex - xy, xy] == opponent)
-                        break;
+                diagWinCount += CountPossibleDiagonalWins_Right(opponent);
 
-                    //Если мы дошли до конца и до сих пор все символы были либо своими, либо пустыми, значит сверху правая диагональ удовлетворяет условию победы
-                    if (xy == this.FieldMaxIndex)
-                        diagWinCount++;
-                }
+            return diagWinCount;
+        }
+
+        private int CountPossibleDiagonalWins_Left(char opponent)
+        {
+            int diagWinCount = 0;
+
+            //Сверху левая диагональ изменяется следующим образом: xy = 0,0; 1,1; 2,2 ...
+            for (int xy = 0; xy < this.FieldSize; xy++)
+            {
+                if (this.Field[xy, xy] == opponent)
+                    break;
+
+                //Если мы дошли до конца и до сих пор все символы были либо своими, либо пустыми, значит сверху левая диагональ удовлетворяет условию победы
+                if (xy == this.FieldMaxIndex)
+                    diagWinCount++;
             }
 
             return diagWinCount;
         }
 
+        private int CountPossibleDiagonalWins_Right(char opponent)
+        {
+            int diagWinCount = 0;
+
+            //Сверху правая диагональ изменяется следующим образом: xy = 4,0; 3,1; 2,2; 1,3; 0,4
+            for (int xy = 0; xy < this.FieldSize; xy++)
+            {
+                if (this.Field[this.FieldMaxIndex - xy, xy] == opponent)
+                    break;
+
+                //Если мы дошли до конца и до сих пор все символы были либо своими, либо пустыми, значит сверху правая диагональ удовлетворяет условию победы
+                if (xy == this.FieldMaxIndex)
+                    diagWinCount++;
+            }
+
+            return diagWinCount;
+        }
+
+        /// <summary>
+        /// Проверяет, возможна ли победа, и если возможна, то считает наименьшее число ходов до победы среди всех возможных
+        /// </summary>
         public int CountTurnsToFastestWinAtCell(char player, int x, int y)
         {
             int horizontal = Int32.MaxValue;
             int vertical = Int32.MaxValue;
-            int diagonal = Int32.MaxValue;
+            int diagonalLeft = Int32.MaxValue;
+            int diagonalRight = Int32.MaxValue;
 
             char opponent = player == CrossChar ? CircleChar : CrossChar;
 
-            return new int[] { horizontal, vertical, diagonal }.Min();
+            bool canWinHor = CountPossibleHorizontalWinsAtCell(player, y) > 0;
+            bool canWinVer = CountPossibleVerticalWinsAtCell(player, x) > 0;
+            bool canWinDia = CountPossibleDiagonalWinsAtCell(opponent, x, y) > 0;
+
+            //На практике, число ходов до победы (при условии, что она возможна) - это число пустых клеток
+            if(canWinHor)
+            {
+                horizontal = 0;
+                for (int lx = 0; lx < this.FieldSize; lx++)
+                    if (this.Field[lx, y] == Grid.EmptyChar)
+                        horizontal++;
+            }
+            if (canWinVer)
+            {
+                vertical = 0;
+                for (int ly = 0; ly < this.FieldSize; ly++)
+                    if (this.Field[x, ly] == Grid.EmptyChar)
+                        vertical++;
+            }
+            if (canWinDia)
+            {
+                ;
+            }
+
+            return new int[] { horizontal, vertical, diagonalLeft, diagonalRight }.Min();
         }
     }
 }
