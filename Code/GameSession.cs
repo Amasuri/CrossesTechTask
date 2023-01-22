@@ -87,6 +87,10 @@ namespace CrossesTechTask.Code
             return CurrentTurn == PlayerType.Player1_X ? player1 : player2;
         }
 
+        /// <summary>
+        /// Заканчивает текущий ход и передаёт его другому игроку. Также сбрасывает указатели на клетку у игроков
+        /// (актуально для игроков людей)
+        /// </summary>
         public void PassTurn()
         {
             if (CurrentTurn == PlayerType.Player1_X)
@@ -98,6 +102,9 @@ namespace CrossesTechTask.Code
             player2.ResetPointer();
         }
 
+        /// <summary>
+        /// Запоминает победителя, но только если его ещё нет
+        /// </summary>
         public void WriteWinner(PlayerType writeThisWinner)
         {
             if (this.Winner != PlayerType.None || writeThisWinner == PlayerType.None)
