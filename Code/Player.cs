@@ -125,8 +125,8 @@ namespace CrossesTechTask.Code
             ///        каждая клетка игрового поля, и выбирается та, где число возможных вариантов побед в будущем наибольше всего.
 
             // 1. Запуск
-            char self = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CrossChar : Grid.CircleChar;
-            char opponent = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CircleChar : Grid.CrossChar;
+            char self = session.CurrentTurn == GameSession.PlayerType.Player1_X ? Grid.CrossChar : Grid.CircleChar;
+            char opponent = session.CurrentTurn == GameSession.PlayerType.Player1_X ? Grid.CircleChar : Grid.CrossChar;
             bool madeMove = false;
 
             // 2. Проверка вариантов победы другого игрока:
@@ -271,9 +271,9 @@ namespace CrossesTechTask.Code
         {
             bool success = false;
 
-            if (session.CurrentTurn == GameSession.TurnOf.Player1_X)
+            if (session.CurrentTurn == GameSession.PlayerType.Player1_X)
                 success = gameGrid.TryPutCrossOnField((int)coord.X, (int)coord.Y);
-            else if (session.CurrentTurn == GameSession.TurnOf.Player2_O)
+            else if (session.CurrentTurn == GameSession.PlayerType.Player2_O)
                 success = gameGrid.TryPutNoughtOnField((int)coord.X, (int)coord.Y);
 
             return success;

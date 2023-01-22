@@ -14,15 +14,15 @@ namespace CrossesTechTask.Code
             RenderGameMode(session);
 
             //Если у нас нет победителя и игра продолжается
-            if (session.Winner == GameSession.TurnOf.None && app.gameState == App.GameState.Playing)
+            if (session.Winner == GameSession.PlayerType.None && app.gameState == App.GameState.Playing)
                 RenderCurrentTurn(session);
 
             //Если у нас есть победитель и игра окончена
-            else if ((session.Winner != GameSession.TurnOf.None && app.gameState == App.GameState.Gameover))
+            else if ((session.Winner != GameSession.PlayerType.None && app.gameState == App.GameState.Gameover))
                 RenderWinningMessage(session);
 
             //Если у нас нет победителя и игра окончена, то есть ничья
-            else if ((session.Winner == GameSession.TurnOf.None && app.gameState == App.GameState.Gameover))
+            else if ((session.Winner == GameSession.PlayerType.None && app.gameState == App.GameState.Gameover))
                 RenderParityMessage();
         }
 
@@ -33,7 +33,7 @@ namespace CrossesTechTask.Code
 
         private static void RenderWinningMessage(GameSession session)
         {
-            string winnerPlayerStr = session.Winner == GameSession.TurnOf.Player1_X ? "первый игрок (X)" : "второй игрок (O)";
+            string winnerPlayerStr = session.Winner == GameSession.PlayerType.Player1_X ? "первый игрок (X)" : "второй игрок (O)";
 
             Console.WriteLine("Побеждает " + winnerPlayerStr + "!\nНажмите Enter для новой партии.\n");
         }
@@ -41,7 +41,7 @@ namespace CrossesTechTask.Code
         private static void RenderCurrentTurn(GameSession session)
         {
             //Вывод информации о текущем ходе
-            string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок ( X, " : "второй игрок ( O, ";
+            string turnOf = session.CurrentTurn == GameSession.PlayerType.Player1_X ? "первый игрок ( X, " : "второй игрок ( O, ";
             string humanOrAI = session.GetCurrentPlayer().IsHuman ? "человек)" : "компьютер)";
 
             Console.WriteLine("Ходит " + turnOf + humanOrAI);

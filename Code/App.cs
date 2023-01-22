@@ -77,7 +77,7 @@ namespace CrossesTechTask.Code
                 CheckForWin();
 
                 //Если игра достигла ничьи и победителя до сих пор не было
-                if (grid.CheckParity() && session.Winner == GameSession.TurnOf.None)
+                if (grid.CheckParity() && session.Winner == GameSession.PlayerType.None)
                 {
                     this.gameState = GameState.Gameover;
                 }
@@ -125,13 +125,13 @@ namespace CrossesTechTask.Code
         {
             if (ChangedStateOnUpdate)
             {
-                bool P1wins = grid.CheckWin(GameSession.TurnOf.Player1_X);
-                bool P2wins = grid.CheckWin(GameSession.TurnOf.Player2_O);
+                bool P1wins = grid.CheckWin(GameSession.PlayerType.Player1_X);
+                bool P2wins = grid.CheckWin(GameSession.PlayerType.Player2_O);
 
                 if (P1wins || P2wins)
                 {
                     gameState = GameState.Gameover;
-                    var winner = P1wins ? GameSession.TurnOf.Player1_X : GameSession.TurnOf.Player2_O;
+                    var winner = P1wins ? GameSession.PlayerType.Player1_X : GameSession.PlayerType.Player2_O;
 
                     session.WriteWinner(winner);
                 }

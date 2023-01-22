@@ -69,9 +69,9 @@ namespace CrossesTechTask.Code
         /// <summary>
         /// Проверяет, выполнено ли хоть одно условие победы для заданного игрока: по вертикали, горизонтали и диагонали. В случае победы возвращает true, иначе false.
         /// </summary>
-        public bool CheckWin(GameSession.TurnOf player)
+        public bool CheckWin(GameSession.PlayerType player)
         {
-            char checkThisChar = player == GameSession.TurnOf.Player1_X ? CrossChar : CircleChar;
+            char checkThisChar = player == GameSession.PlayerType.Player1_X ? CrossChar : CircleChar;
             int winAmount = this.FieldSize;
 
             bool hadWin = false;
