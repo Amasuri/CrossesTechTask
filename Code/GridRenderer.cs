@@ -18,7 +18,13 @@ namespace CrossesTechTask.Code
                     if (x == (int)pointer.X && y == (int)pointer.Y)
                         Console.ForegroundColor = ConsoleColor.Yellow;
 
-                    Console.Write(grid.Field[x, y]);
+                    //Подсветка символов определенного типа для удобства
+                    else if (grid.Field[x, y] == Grid.CrossChar)
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                    else if (grid.Field[x, y] == Grid.CircleChar)
+                        Console.ForegroundColor = ConsoleColor.Red;
+
+                    Console.Write(grid.Field[x, y] + " ");
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
                 Console.WriteLine();
