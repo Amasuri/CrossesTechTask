@@ -147,43 +147,42 @@ namespace CrossesTechTask.Code
             return false;
         }
 
-        private bool DoAiLogic_LookForHighestPossibleWinsCell(GameSession session, Grid gameGrid, char self, char opponent)
+        /// <summary>
+        /// 2. Проверка вариантов победы другого игрока. Если другой игрок победит следующим ходом, то сделать ход туда, куда сделав бы ход, победил другой игрок
+        /// </summary>
+        private bool DoAiLogic_CountEnemyWinVariants(GameSession session, Grid gameGrid, char opponent)
         {
-            // Посчитать число возможных побед для каждой клетки. Победа считается, только если на линии свои, либо пустые клетки.
-            int[,] winsPerCell = new int[gameGrid.FieldSize, gameGrid.FieldSize];
-            Vector3 XY_max = new Vector3(0, 0, 0); //Переменная хранит координаты в XY и максимальное число побед в Z
             for (int x = 0; x < gameGrid.FieldSize; x++)
                 for (int y = 0; y < gameGrid.FieldSize; y++)
                 {
-                    if (gameGrid.Field[x, y] != Grid.EmptyChar)
+                    int turnsToWin = Int32.MaxValue;
+                    turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(opponent, x, y);
+
+                    if (turnsToWin <= 1)
                     {
-                        winsPerCell[x, y] = 0;
-                        continue;
+                        //Если клетка занята противником, следующий цикл просто найдёт другую клетку с такими же условиями,
+                        //поэтому дополнительно проверять куда именно поставить "противопобедный" ход не надо
+                        bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(x, y));
+
+                        if (lSuccess)
+                        {
+                            session.PassTurn();
+                            return true;
+                        }
                     }
-
-                    //Проверка (диагонали, горизонталь, вертикаль)
-                    int cellWinCount = 0;
-
-                    cellWinCount += gameGrid.CountPossibleWinsAtCell(self, opponent, x, y);
-
-                    winsPerCell[x, y] = cellWinCount;
-
-                    //Обновление данных о клетке с максимальным числом возможных побед
-                    if (winsPerCell[x, y] >= XY_max.Z)
-                        XY_max = new Vector3(x, y, winsPerCell[x, y]);
                 }
-
-            bool success = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(XY_max.X, XY_max.Y));
-
-            if (success)
-            {
-                session.PassTurn();
-                return true;
-            }
 
             return false;
         }
 
+        /// <summary>
+        /// <para> 3. Проверка вариантов собственной победы: </para>
+        /// <para> а. Если есть вариант победы в FieldSize-1 ходов, то имеет смысл сделать ход туда
+        ///           (Например, вариант победы в 4, 3, 2, 1 ход при 5х5).
+        ///           При этом выбрать клетку с наименьшим числом ходов для победы, и сделать ход туда.</para>
+        /// <para> б. Если таких вариантов несколько, то выбрать тот, у которого наибольшее число возможных побед
+        ///           (Это часто углы, либо клетки при диагоналях, но к середине игры это не обязательно так)</para>
+        /// </summary>
         private bool DoAiLogic_CountOwnWinVariants(GameSession session, Grid gameGrid, char self, char opponent)
         {
             //Поиск самого быстрого варианта победы, с минимально возможным числом ходов
@@ -225,27 +224,45 @@ namespace CrossesTechTask.Code
             return false;
         }
 
-        private bool DoAiLogic_CountEnemyWinVariants(GameSession session, Grid gameGrid, char opponent)
+        /// <summary>
+        /// <para> 4. Проверка на ходы с наибольшим числом побед </para>
+        /// <para>    а. Если ИИ дошёл до этого пункта и не сделал ход, то скорее всего сейчас либо начало игры, либо
+        ///              в прошлом ходу противник пресек все ближайшие варианты победы. В таком случае, анализируется
+        ///              каждая клетка игрового поля, и выбирается та, где число возможных вариантов побед в будущем наибольше всего. </para>
+        /// </summary>
+        private bool DoAiLogic_LookForHighestPossibleWinsCell(GameSession session, Grid gameGrid, char self, char opponent)
         {
+            // Посчитать число возможных побед для каждой клетки. Победа считается, только если на линии свои, либо пустые клетки.
+            int[,] winsPerCell = new int[gameGrid.FieldSize, gameGrid.FieldSize];
+            Vector3 XY_max = new Vector3(0, 0, 0); //Переменная хранит координаты в XY и максимальное число побед в Z
             for (int x = 0; x < gameGrid.FieldSize; x++)
                 for (int y = 0; y < gameGrid.FieldSize; y++)
                 {
-                    int turnsToWin = Int32.MaxValue;
-                    turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(opponent, x, y);
-
-                    if (turnsToWin <= 1)
+                    if (gameGrid.Field[x, y] != Grid.EmptyChar)
                     {
-                        //Если клетка занята противником, следующий цикл просто найдёт другую клетку с такими же условиями,
-                        //поэтому дополнительно проверять куда именно поставить "противопобедный" ход не надо
-                        bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(x, y));
-
-                        if (lSuccess)
-                        {
-                            session.PassTurn();
-                            return true;
-                        }
+                        winsPerCell[x, y] = 0;
+                        continue;
                     }
+
+                    //Проверка (диагонали, горизонталь, вертикаль)
+                    int cellWinCount = 0;
+
+                    cellWinCount += gameGrid.CountPossibleWinsAtCell(self, opponent, x, y);
+
+                    winsPerCell[x, y] = cellWinCount;
+
+                    //Обновление данных о клетке с максимальным числом возможных побед
+                    if (winsPerCell[x, y] >= XY_max.Z)
+                        XY_max = new Vector3(x, y, winsPerCell[x, y]);
                 }
+
+            bool success = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(XY_max.X, XY_max.Y));
+
+            if (success)
+            {
+                session.PassTurn();
+                return true;
+            }
 
             return false;
         }
