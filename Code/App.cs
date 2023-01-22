@@ -86,7 +86,7 @@ namespace CrossesTechTask.Code
             //Проверка на ресет при нажатии Enter во время конца игры. Начинает новую сессию с нуля
             else if (this.gameState == GameState.Gameover)
             {
-                if(Console.ReadKey(true).Key == ConsoleKey.Enter) //enter
+                if(Console.ReadKey(true).Key == ConsoleKey.Enter)
                 {
                     this.Reset();
                     this.Init();
