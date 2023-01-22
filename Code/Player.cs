@@ -127,70 +127,31 @@ namespace CrossesTechTask.Code
             // 1. Запуск
             char self = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CrossChar : Grid.CircleChar;
             char opponent = session.CurrentTurn == GameSession.TurnOf.Player1_X ? Grid.CircleChar : Grid.CrossChar;
+            bool madeMove = false;
 
             // 2. Проверка вариантов победы другого игрока:
-            // Если другой игрок победит следующим ходом, то сделать ход туда
-            for (int x = 0; x < gameGrid.FieldSize; x++)
-                for (int y = 0; y < gameGrid.FieldSize; y++)
-                {
-                    int turnsToWin = Int32.MaxValue;
-                    turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(opponent, x, y);
-
-                    if(turnsToWin <= 1)
-                    {
-                        //Если клетка занята противником, следующий цикл просто найдёт другую клетку с такими же условиями,
-                        //поэтому дополнительно проверять куда именно поставить "противопобедный" ход не надо
-                        bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(x, y));
-
-                        if (lSuccess)
-                        {
-                            session.PassTurn();
-                            return true;
-                        }
-                    }
-                }
+            madeMove = DoAiLogic_CountEnemyWinVariants(session, gameGrid, opponent);
+            if (madeMove)
+                return true;
 
             // 3. Проверка вариантов собственной победы:
-            // Если есть вариант победы в FieldSize-1, то имеет смысл сделать ход туда
-            // На практике это означает, что в 90% случаев все, кроме первого хода, будет приближением уже обозначенной победы
-            // Если таких вариантов несколько, то выбрать тот, у которого наибольшее число возможных побед
-            Vector3 XY_turnsToWin = new Vector3(0, 0, Int32.MaxValue);
-            for (int x = 0; x < gameGrid.FieldSize; x++)
-                for (int y = 0; y < gameGrid.FieldSize; y++)
-                {
-                    //Проверка на самый быстрый вариант победы
-                    int loc_turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(self, x, y);
-                    if (loc_turnsToWin < XY_turnsToWin.Z && gameGrid.Field[x, y] == Grid.EmptyChar)
-                    {
-                        XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
-                    }
-
-                    //Если попался равный по скорости вариант победы, то проверить его на число возможных вариантов победы. Выбрать тот, где возможностей больше
-                    else if (loc_turnsToWin == XY_turnsToWin.Z && gameGrid.Field[x, y] == Grid.EmptyChar)
-                    {
-                        int winsFormer = gameGrid.CountPossibleWinsAtCell(self, opponent, (int)XY_turnsToWin.X, (int)XY_turnsToWin.Y);
-                        int winsCandidate = gameGrid.CountPossibleWinsAtCell(self, opponent, x, y);
-                        if(winsCandidate > winsFormer)
-                            XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
-                    }
-                }
-
-            //Если самый быстрый вариант победы сейчас также при этом меньше максимально возможного числа ходов, то сделать ход туда
-            if (XY_turnsToWin.Z < gameGrid.FieldSize)
-            {
-                bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(XY_turnsToWin.X, XY_turnsToWin.Y));
-
-                if (lSuccess)
-                {
-                    session.PassTurn();
-                    return true;
-                }
-            }
+            madeMove = DoAiLogic_CountOwnWinVariants(session, gameGrid, self, opponent);
+            if (madeMove)
+                return true;
 
             // 4.Проверка на ходы с наибольшим числом побед
+            madeMove = DoAiLogic_LookForHighestPossibleWinsCell(session, gameGrid, self, opponent);
+            if (madeMove)
+                return true;
+
+            return false;
+        }
+
+        private bool DoAiLogic_LookForHighestPossibleWinsCell(GameSession session, Grid gameGrid, char self, char opponent)
+        {
             // Посчитать число возможных побед для каждой клетки. Победа считается, только если на линии свои, либо пустые клетки.
             int[,] winsPerCell = new int[gameGrid.FieldSize, gameGrid.FieldSize];
-            Vector3 XY_max = new Vector3(0, 0, 0);
+            Vector3 XY_max = new Vector3(0, 0, 0); //Переменная хранит координаты в XY и максимальное число побед в Z
             for (int x = 0; x < gameGrid.FieldSize; x++)
                 for (int y = 0; y < gameGrid.FieldSize; y++)
                 {
@@ -214,10 +175,79 @@ namespace CrossesTechTask.Code
 
             bool success = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(XY_max.X, XY_max.Y));
 
-            if(success)
+            if (success)
+            {
                 session.PassTurn();
+                return true;
+            }
 
-            return true;
+            return false;
+        }
+
+        private bool DoAiLogic_CountOwnWinVariants(GameSession session, Grid gameGrid, char self, char opponent)
+        {
+            //Поиск самого быстрого варианта победы, с минимально возможным числом ходов
+            Vector3 XY_turnsToWin = new Vector3(0, 0, Int32.MaxValue); //Переменная хранит координаты в XY и число ходов до победы в Z
+            for (int x = 0; x < gameGrid.FieldSize; x++)
+                for (int y = 0; y < gameGrid.FieldSize; y++)
+                {
+                    //Проверка на самый быстрый вариант победы
+                    int loc_turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(self, x, y);
+                    if (loc_turnsToWin < XY_turnsToWin.Z && gameGrid.Field[x, y] == Grid.EmptyChar)
+                    {
+                        XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
+                    }
+
+                    //Если попался равный по скорости вариант победы, то проверить его на число возможных вариантов победы. Выбрать тот, где возможностей больше
+                    else if (loc_turnsToWin == XY_turnsToWin.Z && gameGrid.Field[x, y] == Grid.EmptyChar)
+                    {
+                        int winsFormer = gameGrid.CountPossibleWinsAtCell(self, opponent, (int)XY_turnsToWin.X, (int)XY_turnsToWin.Y);
+                        int winsCandidate = gameGrid.CountPossibleWinsAtCell(self, opponent, x, y);
+                        if (winsCandidate > winsFormer)
+                            XY_turnsToWin = new Vector3(x, y, loc_turnsToWin);
+                    }
+                }
+
+            //Если самый быстрый вариант победы сейчас также при этом меньше максимально возможного числа ходов, то сделать ход туда
+            //Т.е. в 5х5 при победе в 1-4 ходов, будет сделан ход туда. В 5 ходов будет пропуск что возможно либо в начале игры,
+            //либо при хорошем прошлом ходе противника
+            if (XY_turnsToWin.Z < gameGrid.FieldSize)
+            {
+                bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(XY_turnsToWin.X, XY_turnsToWin.Y));
+
+                if (lSuccess)
+                {
+                    session.PassTurn();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool DoAiLogic_CountEnemyWinVariants(GameSession session, Grid gameGrid, char opponent)
+        {
+            for (int x = 0; x < gameGrid.FieldSize; x++)
+                for (int y = 0; y < gameGrid.FieldSize; y++)
+                {
+                    int turnsToWin = Int32.MaxValue;
+                    turnsToWin = gameGrid.CountTurnsToFastestWinAtCell(opponent, x, y);
+
+                    if (turnsToWin <= 1)
+                    {
+                        //Если клетка занята противником, следующий цикл просто найдёт другую клетку с такими же условиями,
+                        //поэтому дополнительно проверять куда именно поставить "противопобедный" ход не надо
+                        bool lSuccess = TryPlaceOwnCharOnGrid(session, gameGrid, new Vector2(x, y));
+
+                        if (lSuccess)
+                        {
+                            session.PassTurn();
+                            return true;
+                        }
+                    }
+                }
+
+            return false;
         }
 
         private bool TryPlaceOwnCharOnGrid(GameSession session, Grid gameGrid, Vector2 coord)
