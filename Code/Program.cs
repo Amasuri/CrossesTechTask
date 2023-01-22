@@ -1,5 +1,8 @@
 ﻿namespace CrossesTechTask.Code
 {
+    /// <summary>
+    /// Wrapper для запуска приложения через консоль.
+    /// </summary>
     internal class Program
     {
         private static void Main(string[] args)

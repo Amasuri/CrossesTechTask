@@ -2,9 +2,17 @@
 
 namespace CrossesTechTask.Code
 {
+    /// <summary>
+    /// Класс игровой сессии, то есть всего, что связано непосредственно с текущей сессией игры: режим игры, кто сейчас ходит, кто победитель (если есть),
+    /// а так же сущности игроков.
+    /// </summary>
     public class GameSession
     {
         public Mode CurrentMode { get; private set; }
+
+        /// <summary>
+        /// Режим игры: Игрок против компьютера, два игрока против друг друга, либо два компьютера.
+        /// </summary>
         public enum Mode
         {
             PlayerVsAI = 1,
@@ -21,7 +29,7 @@ namespace CrossesTechTask.Code
             Player2_O = 1,
         }
 
-        //Может быть как компьютером, так и игроком
+        //Игрок может быть как компьютером, так и человеком
         private Player player1;
         private Player player2;
 
