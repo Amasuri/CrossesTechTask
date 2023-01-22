@@ -60,6 +60,13 @@ namespace CrossesTechTask.Code
             session.SetMode(ModeChoice);
             session.Init();
 
+            //Вывод информации о первом ходе
+            string firstPlayer = session.CurrentTurn == GameSession.PlayerType.Player1_X ? "первый игрок (Х, " : "второй игрок (О, ";
+            string pType = session.GetCurrentPlayer().IsHuman ? "человек!)" : "компьютер!)";
+
+            Console.WriteLine("\nПервым ходит " + firstPlayer + pType);
+            Thread.Sleep(2000);
+
             RunFirstRefresh();
         }
 
