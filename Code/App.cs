@@ -79,7 +79,7 @@ namespace CrossesTechTask.Code
                 }
             }
 
-            //
+            //Проверка на ресет при нажатии Enter во время конца игры. Начинает новую сессию с нуля
             else if (this.gameState == GameState.Gameover)
             {
                 if(Console.ReadKey(true).Key == ConsoleKey.Enter) //enter
@@ -92,6 +92,7 @@ namespace CrossesTechTask.Code
 
         public void Draw()
         {
+            //Обновлять отрисовку только при наличии изменений. Ограничения консольного приложения - иначе экран будет мерцать
             if (!ChangedStateOnUpdate)
                 return;
 
@@ -133,6 +134,10 @@ namespace CrossesTechTask.Code
             }
         }
 
+        /// <summary>
+        /// Локальный метод для выбора трёх пунктов меню. Возвращает 1-3 в зависимости от выбора. Валидирует ввод.
+        /// При неправильном вводе будет бесконечно просить ввести снова.
+        /// </summary>
         private int ChooseFromThree(string descriptionText)
         {
             while (true)

@@ -4,6 +4,10 @@ namespace CrossesTechTask.Code
 {
     public static class GridRenderer
     {
+        /// <summary>
+        /// Отрисовка текущего состояния игрового поля. Выводит символы первого, второго игрока и пустые клетки. Помечает цветом каждого игрока,
+        /// для удобства. Также подсвечивает текущую выбранную игроком клетку
+        /// </summary>
         static public void Render(Grid grid, GameSession session)
         {
             var pointer = session.GetCurrentPlayer().Pointer;
