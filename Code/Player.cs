@@ -43,7 +43,7 @@ namespace CrossesTechTask.Code
         public bool Update(GameSession session, Grid gameGrid)
         {
             if (IsHuman)
-                return DoHumanLogic(session, gameGrid);
+                return UpdateHumanPlayerInput(session, gameGrid);
             else
                 return PlayerAI.MakeNextMove(session, gameGrid, this);
         }
@@ -52,7 +52,7 @@ namespace CrossesTechTask.Code
         /// Обновление логики хода человеческого игрока. Отвечает за приём и обработку ввода. Возвращает true если что-то поменялось в состоянии хода,
         /// например, игрок пододвинул курсор.
         /// </summary>
-        private bool DoHumanLogic(GameSession session, Grid gameGrid)
+        private bool UpdateHumanPlayerInput(GameSession session, Grid gameGrid)
         {
             switch (Console.ReadKey(true).Key)
             {
