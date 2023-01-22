@@ -28,6 +28,11 @@ namespace CrossesTechTask.Code
 
         public App()
         {
+            Reset();
+        }
+
+        private void Reset()
+        {
             gameState = GameState.Init;
             grid = new Grid();
             session = new GameSession();
@@ -58,14 +63,25 @@ namespace CrossesTechTask.Code
         {
             ChangedStateOnUpdate = false;
 
+            //Обновление игроков при игре
             if (this.gameState == GameState.Playing)
             {
                 ChangedStateOnUpdate =
                     forceUpdate ||
                     session.UpdatePlayers(this.grid);
+
+                CheckForWin();
             }
 
-            CheckForWin();
+            //
+            else if (this.gameState == GameState.Gameover)
+            {
+                if(Console.ReadKey(true).Key == ConsoleKey.Enter) //enter
+                {
+                    this.Reset();
+                    this.Init();
+                }
+            }
         }
 
         public void Draw()

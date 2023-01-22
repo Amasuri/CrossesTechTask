@@ -43,9 +43,9 @@ namespace CrossesTechTask.Code
             }
             else
             {
-                string winnerPlayerStr = session.Winner == GameSession.TurnOf.Player1_X ? "первый игрок" : "второй игрок";
+                string winnerPlayerStr = session.Winner == GameSession.TurnOf.Player1_X ? "первый игрок (X)" : "второй игрок (O)";
 
-                Console.WriteLine("Побеждает " + winnerPlayerStr + "!\n\n");
+                Console.WriteLine("Побеждает " + winnerPlayerStr + "!\nНажмите Enter для новой партии.\n");
             }
         }
     }
