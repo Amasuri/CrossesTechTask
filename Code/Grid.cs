@@ -3,15 +3,24 @@ using System.Linq;
 
 namespace CrossesTechTask.Code
 {
+    /// <summary>
+    /// Сущность игрового поля. Содержит данные об игровом поле в виде набора символов и сопутствующие ему переменные, такие как размер и максимальный индекс.
+    /// Обладает методами взаимодействия с игровым полем, включающим в себя все нужные валидаторы таких взаимодействий.
+    /// Также обладает набором методов проверки победы для любого из игроков либо ничьи, подсчётом возможных в будущем побед в любой клетке поля
+    /// и самой быстрой победы в клетке.
+    /// </summary>
     public class Grid
     {
         public const char CrossChar = 'X';
         public const char CircleChar = 'O';
         public const char EmptyChar = '*';
 
+        /// <summary>
+        /// Игровое поле в виде набора символов CrossChar, CircleChar и EmptyChar.
+        /// </summary>
+        public char[,] Field { get; private set; }
         public int FieldSize { get; private set; }
         public int FieldMaxIndex => FieldSize - 1;
-        public char[,] Field { get; private set; }
 
         /// <summary>
         /// Инициализирует пустое поле заданного размера
@@ -151,6 +160,20 @@ namespace CrossesTechTask.Code
         }
 
         /// <summary>
+        /// Считает количество возможных побед в данной клетке. Возможная победа означает победу не сейчас, но в некотором будущем,
+        /// через какое-то число ходов. Wrapper метод, вызывающий соответствующие методы для вертикали, горизонтали и диагоналей.
+        /// Возвращает 0, если такая победа невозможна (например, из-за клеток противника в этой вертикали).
+        /// Возвращает 1-4, если победа возможна хотя бы одной из комбинаций (в зависимости от их числа)
+        /// </summary>
+        public int CountPossibleWinsAtCell(char self, char opponent, int x, int y)
+        {
+            return
+                CountPossibleDiagonalWinsAtCell(opponent, x, y)
+                + CountPossibleHorizontalWinsAtCell(self, y)
+                + CountPossibleVerticalWinsAtCell(self, x);
+        }
+
+        /// <summary>
         /// Считает количество возможных горизонтальных побед в данной клетке. Возможная победа означает победу не сейчас, но в некотором будущем,
         /// через какое-то число ходов. Возвращает 0, если такая победа невозможна (например, из-за клетки противника в этой горизонтали),
         /// и 1, если возможна (максимальное число горизонтальных побед на клетку при данных правилах).
@@ -184,20 +207,6 @@ namespace CrossesTechTask.Code
             }
 
             return 1;
-        }
-
-        /// <summary>
-        /// Считает количество возможных побед в данной клетке. Возможная победа означает победу не сейчас, но в некотором будущем,
-        /// через какое-то число ходов. Wrapper метод, вызывающий соответствующие методы для вертикали, горизонтали и диагоналей.
-        /// Возвращает 0, если такая победа невозможна (например, из-за клеток противника в этой вертикали).
-        /// Возвращает 1-4, если победа возможна хотя бы одной из комбинаций (в зависимости от их числа)
-        /// </summary>
-        public int CountPossibleWinsAtCell(char self, char opponent, int x, int y)
-        {
-            return
-                CountPossibleDiagonalWinsAtCell(opponent, x, y)
-                + CountPossibleHorizontalWinsAtCell(self, y)
-                + CountPossibleVerticalWinsAtCell(self, x);
         }
 
         /// <summary>
@@ -267,33 +276,33 @@ namespace CrossesTechTask.Code
         /// </summary>
         public int CountTurnsToFastestWinAtCell(char player, int x, int y)
         {
-            int horizontal = Int32.MaxValue;
-            int vertical = Int32.MaxValue;
-            int diagonalLeft = Int32.MaxValue;
-            int diagonalRight = Int32.MaxValue;
+            int horTurnsToWin = Int32.MaxValue;
+            int vertTurnsToWin = Int32.MaxValue;
+            int diagLeftTurnsToWin = Int32.MaxValue;
+            int diagRightTurnsToWin = Int32.MaxValue;
 
             char opponent = player == CrossChar ? CircleChar : CrossChar;
 
             bool canWinHor = CountPossibleHorizontalWinsAtCell(player, y) > 0;
-            bool canWinVer = CountPossibleVerticalWinsAtCell(player, x) > 0;
-            bool canWinDia = CountPossibleDiagonalWinsAtCell(opponent, x, y) > 0;
+            bool canWinVert = CountPossibleVerticalWinsAtCell(player, x) > 0;
+            bool canWinDiag = CountPossibleDiagonalWinsAtCell(opponent, x, y) > 0;
 
             //На практике, число ходов до победы (при условии, что она возможна) - это число пустых клеток
             if(canWinHor)
             {
-                horizontal = 0;
+                horTurnsToWin = 0;
                 for (int lx = 0; lx < this.FieldSize; lx++)
                     if (this.Field[lx, y] == Grid.EmptyChar)
-                        horizontal++;
+                        horTurnsToWin++;
             }
-            if (canWinVer)
+            if (canWinVert)
             {
-                vertical = 0;
+                vertTurnsToWin = 0;
                 for (int ly = 0; ly < this.FieldSize; ly++)
                     if (this.Field[x, ly] == Grid.EmptyChar)
-                        vertical++;
+                        vertTurnsToWin++;
             }
-            if (canWinDia)
+            if (canWinDiag)
             {
                 //Проверка на принадлежность к какой-либо диагонали. Для сверху левой правило x==y, для сверху правой y == MaxIndex - x
                 bool IsUpperLeft = y == x;
@@ -303,29 +312,29 @@ namespace CrossesTechTask.Code
                 //и победа в этой диагонали ещё возможна
                 if (IsUpperLeft && CountPossibleDiagonalWins_Left(opponent) > 0)
                 {
-                    diagonalLeft = 0;
+                    diagLeftTurnsToWin = 0;
 
                     for (int lxy = 0; lxy < this.FieldSize; lxy++)
                     {
                         if (this.Field[lxy, lxy] == Grid.EmptyChar)
-                            diagonalLeft++;
+                            diagLeftTurnsToWin++;
                     }
                 }
 
                 if (IsUpperRight && CountPossibleDiagonalWins_Right(opponent) > 0)
                 {
-                    diagonalRight = 0;
+                    diagRightTurnsToWin = 0;
 
                     for (int lxy = 0; lxy < this.FieldSize; lxy++)
                     {
                         if (this.Field[this.FieldMaxIndex - lxy, lxy] == Grid.EmptyChar)
-                            diagonalRight++;
+                            diagRightTurnsToWin++;
                     }
                 }
             }
 
             //При наличии нескольких побед, вернуть наиболее оптимальную
-            return new int[] { horizontal, vertical, diagonalLeft, diagonalRight }.Min();
+            return new int[] { horTurnsToWin, vertTurnsToWin, diagLeftTurnsToWin, diagRightTurnsToWin }.Min();
         }
 
         /// <summary>

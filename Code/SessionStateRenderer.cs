@@ -11,11 +11,11 @@ namespace CrossesTechTask.Code
         static public void Render(GameSession session, App app)
         {
             //Вывод информации о режиме игры
-            RenderGameMode(session);
+            RenderGameModeInfo(session);
 
             //Если у нас нет победителя и игра продолжается
             if (session.Winner == GameSession.PlayerType.None && app.gameState == App.GameState.Playing)
-                RenderCurrentTurn(session);
+                RenderCurrentTurnInfo(session);
 
             //Если у нас есть победитель и игра окончена
             else if ((session.Winner != GameSession.PlayerType.None && app.gameState == App.GameState.Gameover))
@@ -38,7 +38,7 @@ namespace CrossesTechTask.Code
             Console.WriteLine("Побеждает " + winnerPlayerStr + "!\nНажмите Enter для новой партии.\n");
         }
 
-        private static void RenderCurrentTurn(GameSession session)
+        private static void RenderCurrentTurnInfo(GameSession session)
         {
             //Вывод информации о текущем ходе
             string turnOf = session.CurrentTurn == GameSession.PlayerType.Player1_X ? "первый игрок ( X, " : "второй игрок ( O, ";
@@ -53,7 +53,7 @@ namespace CrossesTechTask.Code
                 Console.WriteLine("\n");
         }
 
-        private static void RenderGameMode(GameSession session)
+        private static void RenderGameModeInfo(GameSession session)
         {
             Console.Write("Режим игры: ");
             switch (session.CurrentMode)
