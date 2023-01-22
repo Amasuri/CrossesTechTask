@@ -71,6 +71,12 @@ namespace CrossesTechTask.Code
                     session.UpdatePlayers(this.grid);
 
                 CheckForWin();
+
+                //Если игра достигла ничьи и победителя до сих пор не было
+                if (grid.CheckParity() && session.Winner == GameSession.TurnOf.None)
+                {
+                    this.gameState = GameState.Gameover;
+                }
             }
 
             //
@@ -91,7 +97,7 @@ namespace CrossesTechTask.Code
 
             Console.Clear();
 
-            SessionStateRenderer.RenderSimple(this.session);
+            SessionStateRenderer.Render(this.session, this);
             GridRenderer.Render(this.grid, this.session);
         }
 

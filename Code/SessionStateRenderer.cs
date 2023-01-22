@@ -4,7 +4,7 @@ namespace CrossesTechTask.Code
 {
     public static class SessionStateRenderer
     {
-        static public void RenderSimple(GameSession session)
+        static public void Render(GameSession session, App app)
         {
             //Вывод информации о режиме игры
             Console.Write("Режим игры: ");
@@ -27,7 +27,8 @@ namespace CrossesTechTask.Code
                     break;
             }
 
-            if (session.Winner == GameSession.TurnOf.None)
+            //Если у нас нет победителя и игра продолжается
+            if (session.Winner == GameSession.TurnOf.None && app.gameState == App.GameState.Playing)
             {
                 //Вывод информации о текущем ходе
                 string turnOf = session.CurrentTurn == GameSession.TurnOf.Player1_X ? "первый игрок ( X, " : "второй игрок ( O, ";
@@ -41,11 +42,19 @@ namespace CrossesTechTask.Code
                 else
                     Console.WriteLine("\n");
             }
-            else
+
+            //Если у нас есть победитель и игра окончена
+            else if ((session.Winner != GameSession.TurnOf.None && app.gameState == App.GameState.Gameover))
             {
                 string winnerPlayerStr = session.Winner == GameSession.TurnOf.Player1_X ? "первый игрок (X)" : "второй игрок (O)";
 
                 Console.WriteLine("Побеждает " + winnerPlayerStr + "!\nНажмите Enter для новой партии.\n");
+            }
+
+            //Если у нас нет победителя и игра окончена, то есть ничья
+            else if ((session.Winner == GameSession.TurnOf.None && app.gameState == App.GameState.Gameover))
+            {
+                Console.WriteLine("Сыграна ничья." + "\nНажмите Enter для новой партии.\n");
             }
         }
     }

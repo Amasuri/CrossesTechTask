@@ -327,5 +327,28 @@ namespace CrossesTechTask.Code
             //При наличии нескольких побед, вернуть наиболее оптимальную
             return new int[] { horizontal, vertical, diagonalLeft, diagonalRight }.Min();
         }
+
+        /// <summary>
+        /// Проверка на ничью. Возвращает true, если выигрышных ходов не осталось больше ни у одного игрока
+        /// </summary>
+        public bool CheckParity()
+        {
+            int FreeSpaceCount = 0;
+            int Xwins = 0;
+            int Owins = 0;
+
+            for (int x = 0; x < this.FieldSize; x++)
+                for (int y = 0; y < this.FieldSize; y++)
+                {
+                    if (this.Field[x, y] == Grid.EmptyChar)
+                        FreeSpaceCount++;
+
+                    Xwins += CountPossibleWinsAtCell(CrossChar, CircleChar, x, y);
+                    Owins += CountPossibleWinsAtCell(CircleChar, CrossChar, x, y);
+                }
+
+            //Играть дальше не имеет смысла, если не осталось свободного места, либо выигрышных ходов у обоих игроков
+            return FreeSpaceCount == 0 || (Xwins == 0 && Owins == 0);
+        }
     }
 }
