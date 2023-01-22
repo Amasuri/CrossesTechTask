@@ -40,7 +40,7 @@ namespace CrossesTechTask.Code
                                         "\n  2. 4х4" +
                                         "\n  3. 5х5");
 
-            int FieldSize = FieldSizeChoice + 2; //Удобным образом размер сетки соответствует пункту меню +2, но это можно поменять (при желании)
+            int FieldSize = FieldSizeChoice + 2; //Удобным образом размер сетки соответствует пункту меню по номеру +2, но это можно поменять (при желании)
             grid.SetField(FieldSize);
 
             int ModeChoice = ChooseFromThree("Выберите режим (Введите 1-3 и нажмите Enter):" +
@@ -62,7 +62,7 @@ namespace CrossesTechTask.Code
             {
                 ChangedStateOnUpdate =
                     forceUpdate ||
-                    session.UpdatePlayers(this.grid); //will compiler optimize this? i.e. on more logic if one of them true, will other compute?
+                    session.UpdatePlayers(this.grid);
             }
 
             CheckForWin();
